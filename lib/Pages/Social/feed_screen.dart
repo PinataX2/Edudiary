@@ -8,7 +8,6 @@
   import 'package:my_project/Pages/Social/widgets/post_card.dart';
   import '../../Creates/create_yearbook.dart';
   import '../../Creates/select_yearbook.dart';
-  import '../GClassroom/screens/select_a_school.dart';
   import 'choose_yearbook.dart';
 
   class FeedScreen extends StatefulWidget {
