@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "139725958550",
+    "project_id": "studentdiaryrupin",
+    "storage_bucket": "studentdiaryrupin.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:139725958550:android:772462708f1ef5ac1141b7",
+        "android_client_info": {
+          "package_name": "com.example.my_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "139725958550-bkd6cgjav48o0ghl81jbg7fbo9qec0hf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBiFIOhuOGrz4dkhmzjyH1dRY3owz18q18"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "139725958550-bkd6cgjav48o0ghl81jbg7fbo9qec0hf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
