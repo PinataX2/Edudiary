@@ -1,59 +1,65 @@
-// ignore_for_file: prefer_const_constructors, empty_catches
+// ignore_for_file: prefer_const_constructors, empty_catches, no_leading_underscores_for_local_identifiers, non_constant_identifier_names
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:my_project/main_home_page.dart';
 import 'package:uuid/uuid.dart';
+import 'choose_yearbook.dart';
 
-import '../screens/groups_home_page.dart';
-
-class CreateClasswork extends StatefulWidget {
-  String classId;
-  CreateClasswork({super.key, required this.classId});
-  //const CreateClasswork({super.key});
+class CreateYearbook extends StatefulWidget {
+  const CreateYearbook({super.key});
 
   @override
-  State<CreateClasswork> createState() => _CreateClassworkState();
+  State<CreateYearbook> createState() => _CreateYearbookState();
 }
 
-class _CreateClassworkState extends State<CreateClasswork> {
+class _CreateYearbookState extends State<CreateYearbook> {
   // text controllers
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _IdController = TextEditingController();
-  Future CreateClasswork() async {
+
+  Future CreateYearbook() async {
     final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-    String classworkId = Uuid().v1();
+    String yearbookId = Uuid().v1();
+
     try {
+      //adding yearbook data
+      _firestore.collection('Yearbooks').doc(yearbookId).set({
+        'creatorid': FirebaseAuth.instance.currentUser!.uid.toString(),
+        'creatorName': FirebaseAuth.instance.currentUser!.email.toString(),
+        'yearbookId': yearbookId,
+        'yearbookName': _emailController.text.trim(),
+        'description': _passwordController.text.trim(),
+      });
+      //adding yearbook to users
       _firestore
-          .collection('class')
-          .doc(widget.classId)
-          .collection('classWork')
-          .doc(classworkId)
-          .set(
-        {
-          'title': _emailController.text.trim(),
-          'description': _passwordController.text.trim(),
-          'classworkId': classworkId,
-          'classId': widget.classId,
-        },
-      );
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid.toString())
+          .collection('yearbooks')
+          .doc(yearbookId)
+          .set({
+        'creatorid': FirebaseAuth.instance.currentUser!.uid.toString(),
+        'creatorName': FirebaseAuth.instance.currentUser!.email.toString(),
+        'yearbookId': yearbookId,
+        'yearbookName': _emailController.text.trim(),
+        'description': _passwordController.text.trim(),
+      });
+
       showDialog(
-          context: this.context, // code alteration here maybe
+          context: context, // code alteration here maybe
           builder: (context) {
             return AlertDialog(
               content: Text('Success'),
             );
           });
+
       Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) => GroupHomePage(),
-        ),
-      );
+          MaterialPageRoute(builder: (context) => SchoolManagement(index: 1)));
     } catch (e) {
       showDialog(
-          context: this.context, // code alteration here maybe
+          context: context, // code alteration here maybe
           builder: (context) {
             return AlertDialog(
               content: Text(e.toString()),
@@ -71,7 +77,6 @@ class _CreateClassworkState extends State<CreateClasswork> {
 
   @override
   Widget build(BuildContext context) {
-    String classId = widget.classId; // taking the school id
     return Scaffold(
       backgroundColor: Colors.white,
       // ignore: prefer_const_literals_to_create_immutables
@@ -85,12 +90,12 @@ class _CreateClassworkState extends State<CreateClasswork> {
                 // hello again!
                 Icon(
                   Icons.chrome_reader_mode,
-                  color: Color(0XFF343E87),
                   size: 100,
+                  color: Color(0XFF343E87),
                 ),
                 SizedBox(height: 50),
                 Text(
-                  'Create a Classwork!',
+                  'Create a yearbook!',
                   style: GoogleFonts.bebasNeue(
                     fontSize: 52,
                   ),
@@ -110,33 +115,6 @@ class _CreateClassworkState extends State<CreateClasswork> {
                 SizedBox(
                   height: 50,
                 ),
-                // select school
-
-                // School text field
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Color(0xFFD4E7FE),
-                      border: Border.all(color: Colors.white),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 20.0),
-                      child: TextField(
-                        enabled: false,
-                        controller: _IdController,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: classId,
-                          labelText: 'Class Id : ' + classId, // shcool id here
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-
-                SizedBox(height: 10),
                 // email text field
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -152,7 +130,7 @@ class _CreateClassworkState extends State<CreateClasswork> {
                         controller: _emailController,
                         decoration: InputDecoration(
                           border: InputBorder.none,
-                          hintText: 'Title',
+                          hintText: 'Yearbook Name',
                         ),
                       ),
                     ),
@@ -196,7 +174,7 @@ class _CreateClassworkState extends State<CreateClasswork> {
                     horizontal: 25.0,
                   ),
                   child: GestureDetector(
-                    onTap: CreateClasswork,
+                    onTap: CreateYearbook,
                     child: Container(
                       padding: EdgeInsets.all(20),
                       decoration: BoxDecoration(
@@ -216,15 +194,14 @@ class _CreateClassworkState extends State<CreateClasswork> {
                     ),
                   ),
                 ),
-                // SizedBox(height: 25),
+                SizedBox(height: 25),
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 25.0,
-                    vertical: 10,
                   ),
                   child: GestureDetector(
                     onTap: () async {
-                      Navigator.of(context).pop();
+                      (Navigator.of(context).pop());
                     },
                     child: Container(
                       padding: EdgeInsets.all(20),
@@ -245,7 +222,7 @@ class _CreateClassworkState extends State<CreateClasswork> {
                     ),
                   ),
                 ),
-
+                SizedBox(height: 25),
                 // register button
               ],
             ),

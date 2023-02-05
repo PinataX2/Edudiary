@@ -3,38 +3,42 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:my_project/Creates/add_class.dart';
-import 'package:my_project/Pages/GClassroom/screens/assign_class.dart';
-import 'package:my_project/Pages/GClassroom/screens/home_page.dart';
-import '../data/classrooms.dart';
+import 'package:my_project/Pages/GClassroom/Methods/Classwork%20Methods/classwork_class.dart';
+import '../../data/classrooms.dart';
 //import 'class_room_page.dart';
 
-class AssignSchool extends StatefulWidget {
+class ClassworkSchool extends StatefulWidget {
   @override
-  _AssignSchoolState createState() => _AssignSchoolState();
+  _ClassworkSchoolState createState() => _ClassworkSchoolState();
 }
 
-class _AssignSchoolState extends State<AssignSchool> {
+class _ClassworkSchoolState extends State<ClassworkSchool> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         elevation: 0.5,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Color(0XFF343E87)),
+          onPressed: () async {
+            Navigator.of(context).pop();
+          },
+        ),
         //leading: Icon(Icons.menu, color: Colors.black87),
         title: Text(
-          "Select For Assignment",
+          "Classwork: Select Group",
           style: TextStyle(color: Color(0XFF343E87), fontSize: 20),
         ),
         backgroundColor: Color(0xFFD4E7FE),
         actions: [
-          IconButton(
-            icon: Icon(
-              Icons.add,
-              color: Color(0XFF343E87),
-              size: 24,
-            ),
-            onPressed: () {},
-          ),
+          // IconButton(
+          //   icon: Icon(
+          //     Icons.add,
+          //     color: Color(0XFF343E87),
+          //     size: 24,
+          //   ),
+          //   onPressed: () {},
+          // ),
         ],
       ),
       body: StreamBuilder(
@@ -57,7 +61,7 @@ class _AssignSchoolState extends State<AssignSchool> {
               return GestureDetector(
                 onTap: () => Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (_) => AssignClass(
+                    builder: (_) => ClassworkClass(
                       schoolId: snapshot.data!.docs[index].get('uid'),
                     ),
                   ),
@@ -102,7 +106,7 @@ class _AssignSchoolState extends State<AssignSchool> {
                     Container(
                       margin: EdgeInsets.only(top: 125, left: 30),
                       child: Text(
-                        'School Id :' + snapshot.data!.docs[index].get('uid'),
+                        'Group ' + (index + 1).toString(),
                         style: TextStyle(
                             fontSize: 12,
                             color: Colors.white54,

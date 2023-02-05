@@ -2,10 +2,10 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:my_project/Creates/create_stream.dart';
-import 'package:my_project/Pages/GClassroom/Methods/classwork_create.dart';
-import '../data/classrooms.dart';
- 
+import 'package:my_project/Pages/GClassroom/Methods/Stream%20Methods/create_stream.dart';
+import 'package:my_project/Pages/GClassroom/Methods/Classwork%20Methods/classwork_create.dart';
+import '../../data/classrooms.dart';
+
 //import 'class_room_page.dart';
 
 class ClassworkClass extends StatefulWidget {
@@ -22,21 +22,27 @@ class _ClassworkClassState extends State<ClassworkClass> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0.5,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Color(0XFF343E87)),
+          onPressed: () async {
+            Navigator.of(context).pop();
+          },
+        ),
         //leading: Icon(Icons.menu, color: Colors.black87),
         title: Text(
-          "Classroom : Select Class",
+          "Classwork : Select Class",
           style: TextStyle(color: Color(0XFF343E87), fontSize: 20),
         ),
         backgroundColor: Color(0xFFD4E7FE),
         actions: [
-          IconButton(
-            icon: Icon(
-              Icons.add,
-              color: Color(0XFF343E87),
-              size: 24,
-            ),
-            onPressed: () {},
-          ),
+          // IconButton(
+          //   icon: Icon(
+          //     Icons.add,
+          //     color: Color(0XFF343E87),
+          //     size: 24,
+          //   ),
+          //   onPressed: () {},
+          // ),
         ],
       ),
       body: StreamBuilder(
@@ -103,8 +109,7 @@ class _ClassworkClassState extends State<ClassworkClass> {
                     Container(
                       margin: EdgeInsets.only(top: 125, left: 30),
                       child: Text(
-                        'School Id :' +
-                            snapshot.data!.docs[index].get('classid'),
+                        'Class ' + (index + 1).toString(),
                         style: TextStyle(
                             fontSize: 12,
                             color: Colors.white54,

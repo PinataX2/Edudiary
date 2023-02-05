@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:my_project/Pages/Social/upload_post.dart';
+import 'package:my_project/Pages/Social/Methods/upload_post.dart';
 
 class SelectYearbook extends StatefulWidget {
   SelectYearbook({super.key});
@@ -61,62 +61,65 @@ class _SelectYearbookState extends State<SelectYearbook> {
                 SizedBox(
                   height: 50,
                 ),
-                StreamBuilder(
-                  stream: FirebaseFirestore.instance
-                      .collection('Yearbooks')
-                      .where('creatorid',
-                          isEqualTo:
-                              FirebaseAuth.instance.currentUser!.uid.toString())
-                      .snapshots(),
-                  builder: (context,
-                      AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
-                          snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
+                SingleChildScrollView(
+                  child: StreamBuilder(
+                    stream: FirebaseFirestore.instance
+                        .collection('Yearbooks')
+                        .where('creatorid',
+                            isEqualTo: FirebaseAuth.instance.currentUser!.uid
+                                .toString())
+                        .snapshots(),
+                    builder: (context,
+                        AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                            snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
 
-                    return ListView.builder(
-                      itemCount: snapshot.data!.docs.length,
-                      shrinkWrap: true,
-                      itemBuilder: (context, int index) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 25.0,
-                            vertical: 10,
-                          ),
-                          child: GestureDetector(
-                            onTap: () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => UploadPost(
-                                    yearbookid: snapshot.data!.docs[index]
-                                        .get('yearbookId')),
-                              ),
+                      return ListView.builder(
+                        itemCount: snapshot.data!.docs.length,
+                        shrinkWrap: true,
+                        physics: ScrollPhysics(),
+                        itemBuilder: (context, int index) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 25.0,
+                              vertical: 10,
                             ),
-                            child: Container(
-                              padding: EdgeInsets.all(20),
-                              decoration: BoxDecoration(
-                                color: Color(0XFF343E87),
-                                borderRadius: BorderRadius.circular(12),
+                            child: GestureDetector(
+                              onTap: () => Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => UploadPost(
+                                      yearbookid: snapshot.data!.docs[index]
+                                          .get('yearbookId')),
+                                ),
                               ),
-                              child: Center(
-                                child: Text(
-                                  snapshot.data!.docs[index]
-                                      .get('yearbookName'),
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
+                              child: Container(
+                                padding: EdgeInsets.all(20),
+                                decoration: BoxDecoration(
+                                  color: Color(0XFF343E87),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    snapshot.data!.docs[index]
+                                        .get('yearbookName'),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        );
-                      },
-                    );
-                  },
+                          );
+                        },
+                      );
+                    },
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(

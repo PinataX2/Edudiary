@@ -1,66 +1,68 @@
 // ignore_for_file: prefer_const_constructors, empty_catches
 
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:my_project/Pages/GClassroom/screens/home_page.dart';
+import 'package:my_project/main_home_page.dart';
 import 'package:uuid/uuid.dart';
-import 'choose_yearbook.dart';
 
-class JoinYearBook extends StatefulWidget {
-  const JoinYearBook({super.key});
+import '../../screens/groups_home_page.dart';
+
+class AddGroup extends StatefulWidget {
+  const AddGroup({super.key});
 
   @override
-  State<JoinYearBook> createState() => _JoinYearBookState();
+  State<AddGroup> createState() => _AddGroupState();
 }
 
-class _JoinYearBookState extends State<JoinYearBook> {
+class _AddGroupState extends State<AddGroup> {
   // text controllers
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  Future JoinYearBook() async {
+  Future addGroup() async {
     final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-    String yearbookId = _emailController.text.trim();
-    String creatorId = '';
-    String creatorName = '';
-    String yearbookName = '';
-    String description = '';
-
+    String groupId = Uuid().v1();
     try {
-      //getting yearbook data
-      DocumentSnapshot snap =
-          await _firestore.collection('Yearbooks').doc(yearbookId).get();
-      setState(() {
-        creatorId = (snap.data() as Map<String, dynamic>)['creatorid'];
-        creatorName = (snap.data() as Map<String, dynamic>)['creatorName'];
-        yearbookName = (snap.data() as Map<String, dynamic>)['yearbookName'];
-        description = (snap.data() as Map<String, dynamic>)['description'];
+      _firestore.collection('groups').doc(groupId).set({
+        'className': _emailController.text.trim(),
+        'description': _passwordController.text.trim(),
+        'uid': groupId,
+        'creatorid': FirebaseAuth.instance.currentUser!.uid.toString(),
+        'creatoremail': FirebaseAuth.instance.currentUser!.email.toString()
       });
-      //adding yearbook to users
+      //adding to user db
       _firestore
           .collection('users')
           .doc(FirebaseAuth.instance.currentUser!.uid.toString())
-          .collection('yearbooks')
-          .doc(yearbookId)
+          .collection('groups')
+          .doc(groupId)
           .set({
-        'creatorid': creatorId,
-        'creatorName': creatorName,
-        'yearbookId': yearbookId,
-        'yearbookName': yearbookName,
-        'description': description,
+        'className': _emailController.text.trim(),
+        'description': _passwordController.text.trim(),
+        'uid': groupId,
+        'creatorid': FirebaseAuth.instance.currentUser!.uid.toString(),
+        'creatoremail': FirebaseAuth.instance.currentUser!.email.toString(),    
       });
-
-      showDialog(
-          context: context, // code alteration here maybe
-          builder: (context) {
-            return AlertDialog(
-              content: Text('Success'),
-            );
-          });
-
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => ChooseYearbook()));
+      // adding as a member
+      _firestore
+          .collection('groups')
+          .doc(groupId)
+          .collection('members')
+          .doc(FirebaseAuth.instance.currentUser!.uid.toString())
+          .set({
+        'uid': FirebaseAuth.instance.currentUser!.uid.toString(),
+        'member_email': FirebaseAuth.instance.currentUser!.email.toString()
+      });
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => SchoolManagement(index:2),
+        ),
+      );
     } catch (e) {
       showDialog(
           context: this.context, // code alteration here maybe
@@ -99,7 +101,7 @@ class _JoinYearBookState extends State<JoinYearBook> {
                 ),
                 SizedBox(height: 50),
                 Text(
-                  'Join a Yearbook!',
+                  'Create a Group!',
                   style: GoogleFonts.bebasNeue(
                     fontSize: 52,
                   ),
@@ -110,7 +112,7 @@ class _JoinYearBookState extends State<JoinYearBook> {
                 ),
 
                 Text(
-                  'Add Code',
+                  'Add Details',
                   style: TextStyle(
                     fontSize: 24,
                   ),
@@ -134,7 +136,7 @@ class _JoinYearBookState extends State<JoinYearBook> {
                         controller: _emailController,
                         decoration: InputDecoration(
                           border: InputBorder.none,
-                          hintText: 'Yearbook Name',
+                          hintText: 'Group Name',
                         ),
                       ),
                     ),
@@ -142,27 +144,27 @@ class _JoinYearBookState extends State<JoinYearBook> {
                 ),
                 // password
                 SizedBox(height: 10),
-                // Padding(
-                //   padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                //   child: Container(
-                //     decoration: BoxDecoration(
-                //       color: Color(0xFFD4E7FE),
-                //       border: Border.all(color: Colors.white),
-                //       borderRadius: BorderRadius.circular(12),
-                //     ),
-                //     child: Padding(
-                //       padding: const EdgeInsets.only(left: 20.0),
-                //       child: TextField(
-                //         controller: _passwordController,
-                //         decoration: InputDecoration(
-                //           border: InputBorder.none,
-                //           hintText: 'Description',
-                //         ),
-                //       ),
-                //     ),
-                //   ),
-                // ),
-                // SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Color(0xFFD4E7FE),
+                      border: Border.all(color: Colors.white),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 20.0),
+                      child: TextField(
+                        controller: _passwordController,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: 'Description',
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25),
                   child: Row(
@@ -178,7 +180,7 @@ class _JoinYearBookState extends State<JoinYearBook> {
                     horizontal: 25.0,
                   ),
                   child: GestureDetector(
-                    onTap: JoinYearBook,
+                    onTap: addGroup,
                     child: Container(
                       padding: EdgeInsets.all(20),
                       decoration: BoxDecoration(
@@ -187,7 +189,7 @@ class _JoinYearBookState extends State<JoinYearBook> {
                       ),
                       child: Center(
                         child: Text(
-                          'Join',
+                          'Create',
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -198,14 +200,15 @@ class _JoinYearBookState extends State<JoinYearBook> {
                     ),
                   ),
                 ),
-                SizedBox(height: 25),
+                // SizedBox(height: 25),
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 25.0,
+                    vertical: 10,
                   ),
                   child: GestureDetector(
                     onTap: () async {
-                      (Navigator.of(context).pop());
+                      Navigator.of(context).pop();
                     },
                     child: Container(
                       padding: EdgeInsets.all(20),
@@ -226,7 +229,7 @@ class _JoinYearBookState extends State<JoinYearBook> {
                     ),
                   ),
                 ),
-                SizedBox(height: 25),
+
                 // register button
               ],
             ),

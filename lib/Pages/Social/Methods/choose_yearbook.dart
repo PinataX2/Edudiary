@@ -4,10 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:my_project/Pages/Social/join_yearbook.dart';
-
-import '../../Creates/create_yearbook.dart';
-import 'feed_Screen.dart';
+import 'create_yearbook.dart';
+import '../Pages/feed_screen.dart';
+import 'join_yearbook.dart';
 
 class ChooseYearbook extends StatelessWidget {
   const ChooseYearbook({super.key});

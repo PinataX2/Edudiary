@@ -3,27 +3,24 @@
 import 'package:flutter/material.dart';
 import 'Pages/GClassroom/screens/groups_home_page.dart';
 import 'Pages/Profile/edit_profile.dart';
-import 'Pages/Social/add_post_screen.dart';
-import 'Pages/Social/choose_yearbook.dart';
+import 'Pages/Social/Methods/choose_yearbook.dart';
 import 'home.dart';
 
-void main() {
-  runApp(SchoolManagement());
-}
+// void main() {
+//   runApp(SchoolManagement());
+// }
 
 class SchoolManagement extends StatefulWidget {
+  int index;
+  SchoolManagement({super.key, required this.index});
   @override
   _SchoolManagementState createState() => _SchoolManagementState();
 }
 
 class _SchoolManagementState extends State<SchoolManagement> {
-  int _selectedItemIndex = 0;
   final List pages = [
     HomePage(),
     ChooseYearbook(),
-    //FeedScreen(),
-    // AddPostScreen(),
-    //UploadPost(),
     GroupHomePage(),
     SettingsUI(),
   ];
@@ -38,11 +35,11 @@ class _SchoolManagementState extends State<SchoolManagement> {
             unselectedItemColor: Colors.grey,
             selectedItemColor: Color(0XFF343E87),
             //selectedIconTheme: IconThemeData(color: Colors.blueGrey[600]),
-            currentIndex: _selectedItemIndex,
+            currentIndex: widget.index,
             type: BottomNavigationBarType.fixed,
             onTap: (int index) {
               setState(() {
-                _selectedItemIndex = index;
+                widget.index = index;
               });
             },
             items: [
@@ -54,25 +51,17 @@ class _SchoolManagementState extends State<SchoolManagement> {
                 label: "",
                 icon: Icon(Icons.auto_awesome),
               ),
-              // BottomNavigationBarItem(
-              //   label: "",
-              //   icon: Icon(Icons.add),
-              // ),
               BottomNavigationBarItem(
                 label: "",
                 icon: Icon(Icons.school),
               ),
-              // BottomNavigationBarItem(
-              //   label: "",
-              //   icon: Icon(Icons.calendar_today),
-              // ),
               BottomNavigationBarItem(
                 label: "",
                 icon: Icon(Icons.account_box),
               ),
             ],
           ),
-          body: pages[_selectedItemIndex]),
+          body: pages[widget.index]),
     );
   }
 }

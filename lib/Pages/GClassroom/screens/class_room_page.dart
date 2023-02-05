@@ -47,9 +47,11 @@ class _ClassRoomPageState extends State<ClassRoomPage> {
       appBar: AppBar(
         backgroundColor: Color(0xFFD4E7FE),
         elevation: 0.5,
-        leading: Icon(
-          Icons.arrow_back,
-          color: Color(0XFF343E87),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Color(0XFF343E87)),
+          onPressed: () async {
+            Navigator.of(context).pop();
+          },
         ),
         actions: [
           IconButton(

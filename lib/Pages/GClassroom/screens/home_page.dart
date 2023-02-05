@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, prefer_interpolation_to_compose_strings
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +27,12 @@ class _ClassHomePageState extends State<ClassHomePage> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0.5,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Color(0XFF343E87)),
+          onPressed: () async {
+            Navigator.of(context).pop();
+          },
+        ),
         //leading: Icon(Icons.menu, color: Colors.black87),
         title: Text(
           "Classroom : Your Classes",
@@ -34,14 +40,14 @@ class _ClassHomePageState extends State<ClassHomePage> {
         ),
         backgroundColor: Color(0xFFD4E7FE),
         actions: [
-          IconButton(
-            icon: Icon(
-              Icons.add,
-              color: Color(0XFF343E87),
-              size: 24,
-            ),
-            onPressed: () {},
-          ),
+          // IconButton(
+          //   icon: Icon(
+          //     Icons.add,
+          //     color: Color(0XFF343E87),
+          //     size: 24,
+          //   ),
+          //   onPressed: () {},
+          // ),
         ],
       ),
       body: StreamBuilder(
@@ -91,7 +97,7 @@ class _ClassHomePageState extends State<ClassHomePage> {
                       child: Text(
                         snapshot.data!.docs[index].get('className'),
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 22,
                           color: Colors.white,
                           letterSpacing: 1,
                         ),
@@ -111,7 +117,7 @@ class _ClassHomePageState extends State<ClassHomePage> {
                     Container(
                       margin: EdgeInsets.only(top: 125, left: 30),
                       child: Text(
-                        snapshot.data!.docs[index].get('classid'),
+                        'Class ' + (index + 1).toString(),
                         style: TextStyle(
                             fontSize: 12,
                             color: Colors.white54,

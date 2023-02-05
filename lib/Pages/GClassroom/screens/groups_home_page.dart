@@ -1,14 +1,14 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, prefer_interpolation_to_compose_strings
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:my_project/Pages/GClassroom/Methods/classwork_School.dart';
-import 'package:my_project/Pages/GClassroom/screens/assign_grp.dart';
+import 'package:my_project/Pages/GClassroom/Methods/Classwork%20Methods/classwork_School.dart';
+import 'package:my_project/Pages/GClassroom/Methods/Stream%20Methods/assign_grp.dart';
 import 'package:my_project/Pages/GClassroom/screens/home_page.dart';
-import 'package:my_project/Pages/GClassroom/screens/select_a_school.dart';
-import '../../../Creates/add_group.dart';
-import '../../../Creates/join_school.dart';
+import 'package:my_project/Pages/GClassroom/Methods/Create%20Class/select_a_school.dart';
+import '../Methods/Create Groups/add_group.dart';
+import '../Methods/Create Groups/join_school.dart';
 import '../data/classrooms.dart';
 //import 'class_room_page.dart';
 
@@ -91,7 +91,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
                         ),
                         SimpleDialogOption(
                           padding: EdgeInsets.all(20),
-                          child: const Text("Create a Assignment"),
+                          child: const Text("Create a Classwork"),
                           onPressed: () async {
                             Navigator.of(context).push(
                               MaterialPageRoute(
@@ -182,7 +182,8 @@ class _GroupHomePageState extends State<GroupHomePage> {
                     Container(
                       margin: EdgeInsets.only(top: 125, left: 30),
                       child: Text(
-                        snapshot.data!.docs[index].get('creatorid'),
+                        'Group creator : ' +
+                            snapshot.data!.docs[index].get('creatoremail'),
                         style: TextStyle(
                             fontSize: 12,
                             color: Colors.white54,

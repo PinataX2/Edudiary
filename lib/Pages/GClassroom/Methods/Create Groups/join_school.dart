@@ -3,9 +3,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:my_project/main_home_page.dart';
 import 'package:uuid/uuid.dart';
 
-import '../Pages/GClassroom/screens/groups_home_page.dart';
+import '../../screens/groups_home_page.dart';
 
 class JoinSchool extends StatefulWidget {
   JoinSchool({
@@ -32,6 +33,8 @@ class _JoinSchoolState extends State<JoinSchool> {
       String className = (snap.data() as Map<String, dynamic>)["className"];
       String creatorid = (snap.data() as Map<String, dynamic>)["creatorid"];
       String description = (snap.data() as Map<String, dynamic>)["description"];
+      String creatoremail =
+          (snap.data() as Map<String, dynamic>)["creatoremail"];
       //adding to groups db
       _firestore
           .collection('groups')
@@ -57,6 +60,7 @@ class _JoinSchoolState extends State<JoinSchool> {
           'creatorid': creatorid,
           'description': description,
           'uid': Schoolcode,
+          'creatoremail': creatoremail,
         },
       );
 
@@ -69,7 +73,7 @@ class _JoinSchoolState extends State<JoinSchool> {
           });
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (_) => GroupHomePage(),
+          builder: (_) => SchoolManagement(index: 2),
         ),
       );
     } catch (e) {

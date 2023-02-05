@@ -1,46 +1,44 @@
-// ignore_for_file: prefer_const_constructors, prefer_interpolation_to_compose_strings
+// ignore_for_file: prefer_const_constructors
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:my_project/Creates/create_stream.dart';
-import '../data/classrooms.dart';
+import 'package:my_project/Pages/GClassroom/Methods/Create%20Class/add_class.dart';
+import 'package:my_project/Pages/GClassroom/Methods/Stream%20Methods/assign_class.dart';
+import 'package:my_project/Pages/GClassroom/screens/home_page.dart';
+import '../../data/classrooms.dart';
 //import 'class_room_page.dart';
 
-class AssignClass extends StatefulWidget {
-  String schoolId;
-  AssignClass({super.key, required this.schoolId});
-  //const AddClass({super.key});
+class AssignSchool extends StatefulWidget {
   @override
-  _AssignClassState createState() => _AssignClassState();
+  _AssignSchoolState createState() => _AssignSchoolState();
 }
 
-class _AssignClassState extends State<AssignClass> {
+class _AssignSchoolState extends State<AssignSchool> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         elevation: 0.5,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Color(0XFF343E87)),
+          onPressed: () async {
+            Navigator.of(context).pop();
+          },
+        ),
         //leading: Icon(Icons.menu, color: Colors.black87),
         title: Text(
-          "Classroom : Select Class",
+          "Stream : Select Group",
           style: TextStyle(color: Color(0XFF343E87), fontSize: 20),
         ),
         backgroundColor: Color(0xFFD4E7FE),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.add,
-              color: Color(0XFF343E87),
-              size: 24,
-            ),
-            onPressed: () {},
-          ),
-        ],
+        actions: [],
       ),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance
-            .collection('class')
-            .where('groupid', isEqualTo: widget.schoolId)
+            .collection('groups')
+            .where('creatorid',
+                isEqualTo: FirebaseAuth.instance.currentUser!.uid.toString())
             .snapshots(),
         builder: (context,
             AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
@@ -56,8 +54,8 @@ class _AssignClassState extends State<AssignClass> {
               return GestureDetector(
                 onTap: () => Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (_) => CreateStream(
-                      classId: snapshot.data!.docs[index].get('classid'),
+                    builder: (_) => AssignClass(
+                      schoolId: snapshot.data!.docs[index].get('uid'),
                     ),
                   ),
                 ),
@@ -101,8 +99,7 @@ class _AssignClassState extends State<AssignClass> {
                     Container(
                       margin: EdgeInsets.only(top: 125, left: 30),
                       child: Text(
-                        'School Id :' +
-                            snapshot.data!.docs[index].get('classid'),
+                        'Group ' + (index + 1).toString(),
                         style: TextStyle(
                             fontSize: 12,
                             color: Colors.white54,

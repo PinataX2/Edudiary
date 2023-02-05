@@ -14,7 +14,7 @@ class Mainpage extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             //return HomePage();
-            return SchoolManagement();
+            return SchoolManagement(index: 0);
           } else {
             return AuthPage();
           }

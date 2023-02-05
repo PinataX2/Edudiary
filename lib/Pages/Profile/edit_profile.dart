@@ -236,11 +236,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       color: Color(0XFF343E87),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20)),
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                ChangeProfile()));
-                      },
+                      onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => ChangeProfile(),
+                        ),
+                      ),
                       child: Text("Edit",
                           style: TextStyle(
                               fontSize: 14,

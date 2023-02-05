@@ -4,51 +4,65 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:my_project/main_home_page.dart';
 import 'package:uuid/uuid.dart';
+import 'choose_yearbook.dart';
 
-import '../Pages/GClassroom/screens/groups_home_page.dart';
-
-class CreateStream extends StatefulWidget {
-  String classId;
-  CreateStream({super.key, required this.classId});
-  //const CreateStream({super.key});
+class JoinYearBook extends StatefulWidget {
+  const JoinYearBook({super.key});
 
   @override
-  State<CreateStream> createState() => _CreateStreamState();
+  State<JoinYearBook> createState() => _JoinYearBookState();
 }
 
-class _CreateStreamState extends State<CreateStream> {
+class _JoinYearBookState extends State<JoinYearBook> {
   // text controllers
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _IdController = TextEditingController();
-  Future CreateStream() async {
+
+  Future JoinYearBook() async {
     final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-    String streamId = Uuid().v1();
+    String yearbookId = _emailController.text.trim();
+    String creatorId = '';
+    String creatorName = '';
+    String yearbookName = '';
+    String description = '';
+
     try {
+      //getting yearbook data
+      DocumentSnapshot snap =
+          await _firestore.collection('Yearbooks').doc(yearbookId).get();
+      setState(() {
+        creatorId = (snap.data() as Map<String, dynamic>)['creatorid'];
+        creatorName = (snap.data() as Map<String, dynamic>)['creatorName'];
+        yearbookName = (snap.data() as Map<String, dynamic>)['yearbookName'];
+        description = (snap.data() as Map<String, dynamic>)['description'];
+      });
+      //adding yearbook to users
       _firestore
-          .collection('class')
-          .doc(widget.classId)
-          .collection('stream')
-          .doc(streamId)
-          .set(
-        {
-          'title': _emailController.text.trim(),
-          'description': _passwordController.text.trim(),
-          'assignId': streamId,
-          'classId': widget.classId,
-        },
-      );
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid.toString())
+          .collection('yearbooks')
+          .doc(yearbookId)
+          .set({
+        'creatorid': creatorId,
+        'creatorName': creatorName,
+        'yearbookId': yearbookId,
+        'yearbookName': yearbookName,
+        'description': description,
+      });
+
       showDialog(
-          context: this.context, // code alteration here maybe
+          context: context, // code alteration here maybe
           builder: (context) {
             return AlertDialog(
               content: Text('Success'),
             );
           });
+
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (_) => GroupHomePage(),
+          builder: (context) => SchoolManagement(index: 1),
         ),
       );
     } catch (e) {
@@ -71,7 +85,6 @@ class _CreateStreamState extends State<CreateStream> {
 
   @override
   Widget build(BuildContext context) {
-    String classId = widget.classId; // taking the school id
     return Scaffold(
       backgroundColor: Colors.white,
       // ignore: prefer_const_literals_to_create_immutables
@@ -85,12 +98,12 @@ class _CreateStreamState extends State<CreateStream> {
                 // hello again!
                 Icon(
                   Icons.chrome_reader_mode,
-                  color: Color(0XFF343E87),
                   size: 100,
+                  color: Color(0XFF343E87),
                 ),
                 SizedBox(height: 50),
                 Text(
-                  'Create a Stream!',
+                  'Join a Yearbook!',
                   style: GoogleFonts.bebasNeue(
                     fontSize: 52,
                   ),
@@ -101,7 +114,7 @@ class _CreateStreamState extends State<CreateStream> {
                 ),
 
                 Text(
-                  'Add Details',
+                  'Add Code',
                   style: TextStyle(
                     fontSize: 24,
                   ),
@@ -110,33 +123,6 @@ class _CreateStreamState extends State<CreateStream> {
                 SizedBox(
                   height: 50,
                 ),
-                // select school
-
-                // School text field
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Color(0xFFD4E7FE),
-                      border: Border.all(color: Colors.white),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 20.0),
-                      child: TextField(
-                        enabled: false,
-                        controller: _IdController,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: classId,
-                          labelText: 'Class Id : ' + classId, // shcool id here
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-
-                SizedBox(height: 10),
                 // email text field
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -152,7 +138,7 @@ class _CreateStreamState extends State<CreateStream> {
                         controller: _emailController,
                         decoration: InputDecoration(
                           border: InputBorder.none,
-                          hintText: 'Title',
+                          hintText: 'Yearbook Name',
                         ),
                       ),
                     ),
@@ -160,27 +146,27 @@ class _CreateStreamState extends State<CreateStream> {
                 ),
                 // password
                 SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Color(0xFFD4E7FE),
-                      border: Border.all(color: Colors.white),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 20.0),
-                      child: TextField(
-                        controller: _passwordController,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Description',
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10),
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                //   child: Container(
+                //     decoration: BoxDecoration(
+                //       color: Color(0xFFD4E7FE),
+                //       border: Border.all(color: Colors.white),
+                //       borderRadius: BorderRadius.circular(12),
+                //     ),
+                //     child: Padding(
+                //       padding: const EdgeInsets.only(left: 20.0),
+                //       child: TextField(
+                //         controller: _passwordController,
+                //         decoration: InputDecoration(
+                //           border: InputBorder.none,
+                //           hintText: 'Description',
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // ),
+                // SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25),
                   child: Row(
@@ -196,7 +182,7 @@ class _CreateStreamState extends State<CreateStream> {
                     horizontal: 25.0,
                   ),
                   child: GestureDetector(
-                    onTap: CreateStream,
+                    onTap: JoinYearBook,
                     child: Container(
                       padding: EdgeInsets.all(20),
                       decoration: BoxDecoration(
@@ -205,7 +191,7 @@ class _CreateStreamState extends State<CreateStream> {
                       ),
                       child: Center(
                         child: Text(
-                          'Create',
+                          'Join',
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -216,15 +202,14 @@ class _CreateStreamState extends State<CreateStream> {
                     ),
                   ),
                 ),
-                // SizedBox(height: 25),
+                SizedBox(height: 25),
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 25.0,
-                    vertical: 10,
                   ),
                   child: GestureDetector(
                     onTap: () async {
-                      Navigator.of(context).pop();
+                      (Navigator.of(context).pop());
                     },
                     child: Container(
                       padding: EdgeInsets.all(20),
@@ -245,7 +230,7 @@ class _CreateStreamState extends State<CreateStream> {
                     ),
                   ),
                 ),
-
+                SizedBox(height: 25),
                 // register button
               ],
             ),

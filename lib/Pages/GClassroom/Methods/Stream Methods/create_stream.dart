@@ -1,63 +1,55 @@
 // ignore_for_file: prefer_const_constructors, empty_catches
 
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:my_project/Pages/GClassroom/screens/home_page.dart';
+import 'package:my_project/main_home_page.dart';
 import 'package:uuid/uuid.dart';
 
-import '../Pages/GClassroom/screens/groups_home_page.dart';
+import '../../screens/groups_home_page.dart';
 
-class AddGroup extends StatefulWidget {
-  const AddGroup({super.key});
+class CreateStream extends StatefulWidget {
+  String classId;
+  CreateStream({super.key, required this.classId});
+  //const CreateStream({super.key});
 
   @override
-  State<AddGroup> createState() => _AddGroupState();
+  State<CreateStream> createState() => _CreateStreamState();
 }
 
-class _AddGroupState extends State<AddGroup> {
+class _CreateStreamState extends State<CreateStream> {
   // text controllers
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-
-  Future addGroup() async {
+  final _IdController = TextEditingController();
+  Future CreateStream() async {
     final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-    String groupId = Uuid().v1();
+    String streamId = Uuid().v1();
     try {
-      _firestore.collection('groups').doc(groupId).set({
-        'className': _emailController.text.trim(),
-        'description': _passwordController.text.trim(),
-        'uid': groupId,
-        'creatorid': FirebaseAuth.instance.currentUser!.uid.toString()
-      });
-      //adding to user db
       _firestore
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser!.uid.toString())
-          .collection('groups')
-          .doc(groupId)
-          .set({
-        'className': _emailController.text.trim(),
-        'description': _passwordController.text.trim(),
-        'uid': groupId,
-        'creatorid': FirebaseAuth.instance.currentUser!.uid.toString()
-      });
-      // adding as a member
-      _firestore
-          .collection('groups')
-          .doc(groupId)
-          .collection('members')
-          .doc(FirebaseAuth.instance.currentUser!.uid.toString())
-          .set({
-        'uid': FirebaseAuth.instance.currentUser!.uid.toString(),
-        'member_email': FirebaseAuth.instance.currentUser!.email.toString()
-      });
+          .collection('class')
+          .doc(widget.classId)
+          .collection('stream')
+          .doc(streamId)
+          .set(
+        {
+          'title': _emailController.text.trim(),
+          'description': _passwordController.text.trim(),
+          'assignId': streamId,
+          'classId': widget.classId,
+        },
+      );
+      showDialog(
+          context: this.context, // code alteration here maybe
+          builder: (context) {
+            return AlertDialog(
+              content: Text('Success'),
+            );
+          });
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (_) => GroupHomePage(),
+          builder: (_) => SchoolManagement(index: 2),
         ),
       );
     } catch (e) {
@@ -80,6 +72,7 @@ class _AddGroupState extends State<AddGroup> {
 
   @override
   Widget build(BuildContext context) {
+    String classId = widget.classId; // taking the school id
     return Scaffold(
       backgroundColor: Colors.white,
       // ignore: prefer_const_literals_to_create_immutables
@@ -93,12 +86,12 @@ class _AddGroupState extends State<AddGroup> {
                 // hello again!
                 Icon(
                   Icons.chrome_reader_mode,
-                  size: 100,
                   color: Color(0XFF343E87),
+                  size: 100,
                 ),
                 SizedBox(height: 50),
                 Text(
-                  'Create a Group!',
+                  'Create a Stream!',
                   style: GoogleFonts.bebasNeue(
                     fontSize: 52,
                   ),
@@ -118,6 +111,33 @@ class _AddGroupState extends State<AddGroup> {
                 SizedBox(
                   height: 50,
                 ),
+                // select school
+
+                // School text field
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Color(0xFFD4E7FE),
+                      border: Border.all(color: Colors.white),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 20.0),
+                      child: TextField(
+                        enabled: false,
+                        controller: _IdController,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: classId,
+                          labelText: 'Class Id : ' + classId, // shcool id here
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+                SizedBox(height: 10),
                 // email text field
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -133,7 +153,7 @@ class _AddGroupState extends State<AddGroup> {
                         controller: _emailController,
                         decoration: InputDecoration(
                           border: InputBorder.none,
-                          hintText: 'Group Name',
+                          hintText: 'Title',
                         ),
                       ),
                     ),
@@ -177,7 +197,7 @@ class _AddGroupState extends State<AddGroup> {
                     horizontal: 25.0,
                   ),
                   child: GestureDetector(
-                    onTap: addGroup,
+                    onTap: CreateStream,
                     child: Container(
                       padding: EdgeInsets.all(20),
                       decoration: BoxDecoration(

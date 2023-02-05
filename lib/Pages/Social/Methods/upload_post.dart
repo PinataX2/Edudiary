@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, use_build_context_synchronously, must_be_immutable
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,7 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:my_project/Methods/firestore_methods.dart';
 import 'package:my_project/Methods/utils.dart';
-import 'package:my_project/Pages/Social/choose_yearbook.dart';
+import 'package:my_project/main_home_page.dart';
+import 'choose_yearbook.dart';
 
 class UploadPost extends StatefulWidget {
   //const UploadPost({super.key});
@@ -62,8 +63,8 @@ class _UploadPostState extends State<UploadPost> {
               content: Text("Upload Successful !"),
             );
           });
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => ChooseYearbook()));
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => SchoolManagement(index: 1)));
     } catch (e) {
       print(e);
     }

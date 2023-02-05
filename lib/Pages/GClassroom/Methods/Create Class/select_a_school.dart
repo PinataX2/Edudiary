@@ -3,24 +3,31 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:my_project/Pages/GClassroom/Methods/classwork_class.dart';
-import '../data/classrooms.dart';
+import 'package:my_project/Pages/GClassroom/Methods/Create%20Class/add_class.dart';
+import 'package:my_project/Pages/GClassroom/screens/home_page.dart';
+import '../../data/classrooms.dart';
 //import 'class_room_page.dart';
 
-class ClassworkSchool extends StatefulWidget {
+class SelectSchool extends StatefulWidget {
   @override
-  _ClassworkSchoolState createState() => _ClassworkSchoolState();
+  _SelectSchoolState createState() => _SelectSchoolState();
 }
 
-class _ClassworkSchoolState extends State<ClassworkSchool> {
+class _SelectSchoolState extends State<SelectSchool> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         elevation: 0.5,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Color(0XFF343E87)),
+          onPressed: () async {
+            Navigator.of(context).pop();
+          },
+        ),
         //leading: Icon(Icons.menu, color: Colors.black87),
         title: Text(
-          "Select For Assignment",
+          "Classroom : Select School",
           style: TextStyle(color: Color(0XFF343E87), fontSize: 20),
         ),
         backgroundColor: Color(0xFFD4E7FE),
@@ -55,7 +62,7 @@ class _ClassworkSchoolState extends State<ClassworkSchool> {
               return GestureDetector(
                 onTap: () => Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (_) => ClassworkClass(
+                    builder: (_) => AddClass(
                       schoolId: snapshot.data!.docs[index].get('uid'),
                     ),
                   ),
@@ -100,7 +107,7 @@ class _ClassworkSchoolState extends State<ClassworkSchool> {
                     Container(
                       margin: EdgeInsets.only(top: 125, left: 30),
                       child: Text(
-                        'School Id :' + snapshot.data!.docs[index].get('uid'),
+                        'Group ' + (index + 1).toString(),
                         style: TextStyle(
                             fontSize: 12,
                             color: Colors.white54,
